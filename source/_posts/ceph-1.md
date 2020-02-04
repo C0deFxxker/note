@@ -16,7 +16,7 @@ category: Ceph
 
 Ceph将数据作为对象存储在逻辑存储池中。Ceph 使用 CRUSH算法计算一个对象应该包含在哪个Placement group，并进一步计算这个Placement group应存储在哪个Ceph OSD守护程序。CRUSH算法使Ceph存储集群能够动态扩展，重新平衡和恢复。下面是Ceph文件对象存储流程图：
 
-![Ceph文件对象存储流程图](../../../../images/ceph.png)
+![Ceph文件对象存储流程图](../../../../images/ceph-1.png)
 
 # 预安装
 ## 添加密钥
@@ -331,6 +331,98 @@ $ ceph mds stat
  1 up:standby
 ```
 
+## 开启Dashboard
+Ceph Dashboard 是基于 ceph-mgr 服务提供的 Web 可视化管理界面功能，可以使管理员更高效的管理Ceph集群。
+
+1. 开启Dashboard功能模块。
+```sh
+$ ceph mgr module enable dashboard
+# 确认 dashboard 模块是否开启
+$ ceph mgr module ls
+{
+    "enabled_modules": [
+        "dashboard",
+        "iostat",
+        "restful"
+    ],
+    ...
+}
+```
+
+2. [可选] SSL / TLS支持。
+快速生成自签证书命令如下：
+```sh
+$ ceph dashboard create-self-signed-cert
+```
+
+当然，您也可以选用已有的证书。
+```sh
+$ ceph dashboard set-ssl-certificate -i dashboard.crt
+$ ceph dashboard set-ssl-certificate-key -i dashboard.key
+```
+
+如果出于某种原因要求每个管理器实例使用不同的证书，则可以按如下方式包括实例名称（其中$name，ceph-mgr实例名称，通常是主机名）：
+```sh
+$ ceph dashboard set-ssl-certificate $name -i dashboard.crt
+$ ceph dashboard set-ssl-certificate-key $name -i dashboard.key
+```
+
+也可以通过设置以下配置值来禁用SSL：
+```sh
+$ ceph config set mgr mgr/dashboard/ssl false
+```
+
+> **注意**：更新完证书后需要重启Dashboard进程才生效。
+```sh
+# 重启dashboard
+$ ceph mgr module disable dashboard
+$ ceph mgr module enable dashboard
+```
+
+3. [可选] 配置主机名和端口。
+
+默认情况下，dashboard会绑定TCP端口8080和8443(HTTPS)，可以通过下列命令修改dashboard绑定的IP和端口。
+```sh
+$ ceph config set mgr mgr/dashboard/server_addr $IP
+$ ceph config set mgr mgr/dashboard/server_port $PORT
+$ ceph config set mgr mgr/dashboard/ssl_server_port $PORT
+```
+由于每个ceph-mgr主机都拥有自己的仪表板实例，因此也可能需要单独配置它们。可以使用以下命令更改特定管理器实例的IP地址和端口：
+```sh
+$ ceph config set mgr mgr/dashboard/$name/server_addr $IP
+$ ceph config set mgr mgr/dashboard/$name/server_port $PORT
+$ ceph config set mgr mgr/dashboard/$name/ssl_server_port $PORT
+```
+替换$name为托管仪表板Web应用程序的ceph-mgr实例的ID。
+
+> **注意**：更新完主机名或端口配置后也需要重启Dashboard才能生效。
+```sh
+# 重启dashboard
+$ ceph mgr module disable dashboard
+$ ceph mgr module enable dashboard
+```
+
+查询 dashboard 服务开放路径。
+```sh
+$ ceph mgr services
+{
+    "dashboard": "https://192.168.56.101:9443/"
+}
+```
+
+使用浏览器访问这个路径得到Dashboard登录界面。
+![Ceph Dashboard login page](../../../../images/ceph-2.png)
+
+4. 创建Dashboard用户。
+```sh
+# ceph dashboard ac-user-create (username) (password) administrator
+$ ceph dashboard ac-user-create admin admin administrator
+```
+
+在Dashboard登录页尝试登录刚才创建的账号。
+![Ceph Dashboard home page](../../../../images/ceph-3.png)
+
+
 至此Ceph集群基础组件部署完毕，可以根据需要往下部署不同存储类型的服务。
 
 # 三种Ceph存储类型的部署
@@ -638,3 +730,10 @@ The placement group has fewer copies than the configured pool replication level.
 Total PGs = ((Total_number_of_OSD * 30) / max_replication_count) / pool_count 
 
 结算的结果往上取靠近2的N次方的值。
+
+##  Error ENOENT: all mgr daemons do not support module 'dashboard'
+原因：尚未安装 ceph-mgr-dashboard 依赖。
+解决方案：安装 ceph-mgr-dashboard 依赖库。
+```sh
+$ yum install -y ceph-mgr-dashboard
+```
