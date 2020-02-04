@@ -90,7 +90,7 @@
 <meta property="og:image" content="https://docs.ceph.com/docs/master/_images/cephfs-architecture.svg">
 <meta property="og:image" content="https://docs.ceph.com/docs/master/_images/ditaa-50d12451eb76c5c72c4574b08f0320b39a42e5f1.png">
 <meta property="og:image" content="https://docs.ceph.com/docs/master/_images/ditaa-dc9f80d771b55f2daa5cbbfdb2dd0d3e6dfc17c0.png">
-<meta property="og:updated_time" content="2020-02-04T02:36:09.436Z">
+<meta property="og:updated_time" content="2020-02-04T02:40:09.638Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Ceph集群部署">
 <meta name="twitter:description" content="本文主要介绍Ceph存储集群的部署方式，以及三种存储类型服务的构建及简单使用，不对内部原理做深入介绍，过后会编写另外的文章聊这个话题。本文属于个人学习笔记，如有错误欢迎指正，部署期间踩到的坑写在了Q&amp;amp;A。">
@@ -276,7 +276,7 @@
               
                 <span class="post-meta-item-text">Posted on</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-02-04T10:36:09+08:00">
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-02-04T10:40:09+08:00">
                 2020-02-04
               </time>
             
@@ -341,10 +341,10 @@
 
 <h1 id="组件介绍"><a href="#组件介绍" class="headerlink" title="组件介绍"></a>组件介绍</h1><p>一个Ceph存储群集至少需要一个监控器(ceph-mon)，管理器(ceph-mgr)和对象存储守护程序(ceph-osd)。运行Ceph文件系统客户端时，还需要元数据服务器(ceph-mds)。</p>
 <ul>
-<li>管理器(ceph-mon): 维护集群状态的映射，包括监视器映射，管理器映射，OSD映射，MDS映射和CRUSH映射。这些映射是Ceph守护程序相互协调所需的关键群集状态。监视器还负责管理守护程序和客户端之间的身份验证。通常至少需要三个监视器才能实现冗余和高可用性。</li>
-<li>管理器(ceph-mgr): 负责跟踪运行时指标和Ceph集群的当前状态，包括存储利用率，当前性能指标和系统负载。Ceph Manager守护程序基于python模块进行管理并且负责公开Ceph集群信息（包括基于Web的Ceph Dashboard和 REST API）。通常，至少需要两个管理器才能实现高可用性。</li>
-<li>对象存储守护程序(ceph-osd): 处理数据复制，恢复，重新平衡，并通过检查其他Ceph OSD守护程序的心跳来向Ceph监视器和管理器提供一些监视信息。通常至少需要3个Ceph OSD才能实现冗余和高可用性。</li>
-<li>元数据服务器(ceph-mds): 代表Ceph文件系统存储元数据（即Ceph块设备和Ceph对象存储不使用MDS）。Ceph的元数据服务器允许POSIX文件系统的用户来执行基本的命令（如 ls，find等等）。</li>
+<li><strong>管理器(ceph-mon)</strong>: 维护集群状态的映射，包括监视器映射，管理器映射，OSD映射，MDS映射和CRUSH映射。这些映射是Ceph守护程序相互协调所需的关键群集状态。监视器还负责管理守护程序和客户端之间的身份验证。通常至少需要三个监视器才能实现冗余和高可用性。</li>
+<li><strong>管理器(ceph-mgr)</strong>: 负责跟踪运行时指标和Ceph集群的当前状态，包括存储利用率，当前性能指标和系统负载。Ceph Manager守护程序基于python模块进行管理并且负责公开Ceph集群信息（包括基于Web的Ceph Dashboard和 REST API）。通常，至少需要两个管理器才能实现高可用性。</li>
+<li><strong>对象存储守护程序(ceph-osd)</strong>: 处理数据复制，恢复，重新平衡，并通过检查其他Ceph OSD守护程序的心跳来向Ceph监视器和管理器提供一些监视信息。通常至少需要3个Ceph OSD才能实现冗余和高可用性。</li>
+<li><strong>元数据服务器(ceph-mds)</strong>: 代表Ceph文件系统存储元数据（即Ceph块设备和Ceph对象存储不使用MDS）。Ceph的元数据服务器允许POSIX文件系统的用户来执行基本的命令（如 ls，find等等）。</li>
 </ul>
 <p>Ceph将数据作为对象存储在逻辑存储池中。Ceph 使用 CRUSH算法计算一个对象应该包含在哪个Placement group，并进一步计算这个Placement group应存储在哪个Ceph OSD守护程序。CRUSH算法使Ceph存储集群能够动态扩展，重新平衡和恢复。下面是Ceph文件对象存储流程图：</p>
 <p><img src="../../../../images/ceph.png" alt="Ceph文件对象存储流程图"></p>
