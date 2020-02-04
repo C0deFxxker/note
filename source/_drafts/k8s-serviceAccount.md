@@ -65,7 +65,7 @@ ServiceAccountController 则确保每个命名空间中都由一个名为 defaul
 
 # ApiServer 安全校验
 ApiServer 的请求限制由3部分组成：鉴权(authentication)、授权(authorization)、访问控制(admission control)。每一个组件中包含若干个插件链，当请求通过了一个组件下的所有插件后会将请求传递给下一部分组件的插件链继续校验，直到访问控制(admission control)组件的最后一个插件也通过了这个请求才算是校验通过。
-![ApiServer 安全](../images/k8s-security.jpg)
+![ApiServer 安全](../../../../images/k8s-security.jpg)
 
 ## 鉴权(Authentication)
 kubectl 是通过获取客户端的 ~/.kube/config 文件来得到证书以及Token，再把这些信息发送给 ApiServer。

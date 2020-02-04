@@ -7,6 +7,17 @@ category: Ceph
 
 <!-- more -->
 
+# 组件介绍
+一个Ceph存储群集至少需要一个监控器(ceph-mon)，管理器(ceph-mgr)和对象存储守护程序(ceph-osd)。运行Ceph文件系统客户端时，还需要元数据服务器(ceph-mds)。
+* 管理器(ceph-mon): 维护集群状态的映射，包括监视器映射，管理器映射，OSD映射，MDS映射和CRUSH映射。这些映射是Ceph守护程序相互协调所需的关键群集状态。监视器还负责管理守护程序和客户端之间的身份验证。通常至少需要三个监视器才能实现冗余和高可用性。
+* 管理器(ceph-mgr): 负责跟踪运行时指标和Ceph集群的当前状态，包括存储利用率，当前性能指标和系统负载。Ceph Manager守护程序基于python模块进行管理并且负责公开Ceph集群信息（包括基于Web的Ceph Dashboard和 REST API）。通常，至少需要两个管理器才能实现高可用性。
+* 对象存储守护程序(ceph-osd): 处理数据复制，恢复，重新平衡，并通过检查其他Ceph OSD守护程序的心跳来向Ceph监视器和管理器提供一些监视信息。通常至少需要3个Ceph OSD才能实现冗余和高可用性。
+* 元数据服务器(ceph-mds): 代表Ceph文件系统存储元数据（即Ceph块设备和Ceph对象存储不使用MDS）。Ceph的元数据服务器允许POSIX文件系统的用户来执行基本的命令（如 ls，find等等）。
+
+Ceph将数据作为对象存储在逻辑存储池中。Ceph 使用 CRUSH算法计算一个对象应该包含在哪个Placement group，并进一步计算这个Placement group应存储在哪个Ceph OSD守护程序。CRUSH算法使Ceph存储集群能够动态扩展，重新平衡和恢复。下面是Ceph文件对象存储流程图：
+
+![Ceph文件对象存储流程图](../../../../images/ceph.png)
+
 # 预安装
 ## 添加密钥
 ### APT
@@ -124,7 +135,7 @@ $ yum install ceph-deploy
 
 以 node1 作为部署主节点，如没有特殊说明下面给出的指令都运行在node1节点上。
 
-## 启动 ceph-mon
+## 部署 ceph-mon
 1. 创建 Ceph 配置文件:
 ```sh
 # 计划三个节点都部署ceph-mon服务，格式: ceph-deploy new {initial-monitor-node(s)}
@@ -216,7 +227,7 @@ node1上执行ceph命令，确认admin密钥正确:
 [errno 2] error connecting to the cluster
 ```
 
-## 部署ceph-mgr
+## 部署 ceph-mgr
 在 luminous 或更新的版本需要这一步。
 ```sh
 $ ceph-deploy mgr create node1
