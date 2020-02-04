@@ -86,17 +86,17 @@
 <meta property="og:site_name" content="C0deHvb">
 <meta property="og:description" content="本文主要介绍Ceph存储集群的部署方式，以及三种存储类型服务的构建及简单使用，不对内部原理做深入介绍，过后会编写另外的文章聊这个话题。本文属于个人学习笔记，如有错误欢迎指正，部署期间踩到的坑写在了Q&amp;amp;A。">
 <meta property="og:locale" content="zh">
-<meta property="og:image" content="http://yoursite.com/images/ceph-1.png">
-<meta property="og:image" content="http://yoursite.com/images/ceph-2.png">
-<meta property="og:image" content="http://yoursite.com/images/ceph-3.png">
+<meta property="og:image" content="http://yoursite.com/note/images/ceph-1.png">
+<meta property="og:image" content="http://yoursite.com/note/images/ceph-2.png">
+<meta property="og:image" content="http://yoursite.com/note/images/ceph-3.png">
 <meta property="og:image" content="https://docs.ceph.com/docs/master/_images/cephfs-architecture.svg">
 <meta property="og:image" content="https://docs.ceph.com/docs/master/_images/ditaa-50d12451eb76c5c72c4574b08f0320b39a42e5f1.png">
 <meta property="og:image" content="https://docs.ceph.com/docs/master/_images/ditaa-dc9f80d771b55f2daa5cbbfdb2dd0d3e6dfc17c0.png">
-<meta property="og:updated_time" content="2020-02-04T03:21:01.624Z">
+<meta property="og:updated_time" content="2020-02-04T03:42:09.613Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Ceph集群部署">
 <meta name="twitter:description" content="本文主要介绍Ceph存储集群的部署方式，以及三种存储类型服务的构建及简单使用，不对内部原理做深入介绍，过后会编写另外的文章聊这个话题。本文属于个人学习笔记，如有错误欢迎指正，部署期间踩到的坑写在了Q&amp;amp;A。">
-<meta name="twitter:image" content="http://yoursite.com/images/ceph-1.png">
+<meta name="twitter:image" content="http://yoursite.com/note/images/ceph-1.png">
 
 
 
@@ -252,7 +252,7 @@
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/note/2020/02/04/ceph-1/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="黎毅麟">
+      <meta itemprop="name" content="c0dehvb">
       <meta itemprop="description" content>
       <meta itemprop="image" content="/note/images/avatar.gif">
     </span>
@@ -278,7 +278,7 @@
               
                 <span class="post-meta-item-text">Posted on</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-02-04T11:21:01+08:00">
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-02-04T11:42:09+08:00">
                 2020-02-04
               </time>
             
@@ -349,7 +349,7 @@
 <li><strong>元数据服务器(ceph-mds)</strong>: 代表Ceph文件系统存储元数据（即Ceph块设备和Ceph对象存储不使用MDS）。Ceph的元数据服务器允许POSIX文件系统的用户来执行基本的命令（如 ls，find等等）。</li>
 </ul>
 <p>Ceph将数据作为对象存储在逻辑存储池中。Ceph 使用 CRUSH算法计算一个对象应该包含在哪个Placement group，并进一步计算这个Placement group应存储在哪个Ceph OSD守护程序。CRUSH算法使Ceph存储集群能够动态扩展，重新平衡和恢复。下面是Ceph文件对象存储流程图：</p>
-<p><img src="../../../../images/ceph-1.png" alt="Ceph文件对象存储流程图"></p>
+<p><img src="/note/images/ceph-1.png" alt="Ceph文件对象存储流程图"></p>
 <h1 id="预安装"><a href="#预安装" class="headerlink" title="预安装"></a>预安装</h1><h2 id="添加密钥"><a href="#添加密钥" class="headerlink" title="添加密钥"></a>添加密钥</h2><h3 id="APT"><a href="#APT" class="headerlink" title="APT"></a>APT</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wget -q -O- <span class="string">'https://download.ceph.com/keys/release.asc'</span> | sudo apt-key add -</span><br></pre></td></tr></table></figure>
 
 <h3 id="RPM"><a href="#RPM" class="headerlink" title="RPM"></a>RPM</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo rpm --import <span class="string">'https://download.ceph.com/keys/release.asc'</span></span><br></pre></td></tr></table></figure>
@@ -509,13 +509,13 @@
 <p>查询 dashboard 服务开放路径。</p>
 <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ ceph mgr services</span><br><span class="line">&#123;</span><br><span class="line">    <span class="string">"dashboard"</span>: <span class="string">"https://192.168.56.101:9443/"</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p>使用浏览器访问这个路径得到Dashboard登录界面。<br><img src="../../../../images/ceph-2.png" alt="Ceph Dashboard login page"></p>
+<p>使用浏览器访问这个路径得到Dashboard登录界面。<br><img src="/note/images/ceph-2.png" alt="Ceph Dashboard login page"></p>
 <ol start="4">
 <li>创建Dashboard用户。<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># ceph dashboard ac-user-create (username) (password) administrator</span></span><br><span class="line">$ ceph dashboard ac-user-create admin admin administrator</span><br></pre></td></tr></table></figure>
 
 </li>
 </ol>
-<p>在Dashboard登录页尝试登录刚才创建的账号。<br><img src="../../../../images/ceph-3.png" alt="Ceph Dashboard home page"></p>
+<p>在Dashboard登录页尝试登录刚才创建的账号。<br><img src="/note/images/ceph-3.png" alt="Ceph Dashboard home page"></p>
 <p>至此Ceph集群基础组件部署完毕，可以根据需要往下部署不同存储类型的服务。</p>
 <h1 id="三种Ceph存储类型的部署"><a href="#三种Ceph存储类型的部署" class="headerlink" title="三种Ceph存储类型的部署"></a>三种Ceph存储类型的部署</h1><p>CephFS致力于为各种应用程序提供最新，多用途，高可用性和高性能的文件存储。提供了三种存储类型：</p>
 <ul>
@@ -727,7 +727,7 @@
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
-              <p class="site-author-name" itemprop="name">黎毅麟</p>
+              <p class="site-author-name" itemprop="name">c0dehvb</p>
               <p class="site-description motion-element" itemprop="description"></p>
           </div>
 
@@ -748,10 +748,10 @@
               
               
               <div class="site-state-item site-state-categories">
-                
+                <a href="/note/categories/index.html">
                   <span class="site-state-item-count">4</span>
                   <span class="site-state-item-name">categories</span>
-                
+                </a>
               </div>
             
 
@@ -808,7 +808,7 @@
   <span class="with-love">
     <i class="fa fa-user"></i>
   </span>
-  <span class="author" itemprop="copyrightHolder">黎毅麟</span>
+  <span class="author" itemprop="copyrightHolder">c0dehvb</span>
 
   
 </div>

@@ -16,7 +16,7 @@ category: Ceph
 
 Ceph将数据作为对象存储在逻辑存储池中。Ceph 使用 CRUSH算法计算一个对象应该包含在哪个Placement group，并进一步计算这个Placement group应存储在哪个Ceph OSD守护程序。CRUSH算法使Ceph存储集群能够动态扩展，重新平衡和恢复。下面是Ceph文件对象存储流程图：
 
-![Ceph文件对象存储流程图](../../../../images/ceph-1.png)
+![Ceph文件对象存储流程图](/note/images/ceph-1.png)
 
 # 预安装
 ## 添加密钥
@@ -411,7 +411,7 @@ $ ceph mgr services
 ```
 
 使用浏览器访问这个路径得到Dashboard登录界面。
-![Ceph Dashboard login page](../../../../images/ceph-2.png)
+![Ceph Dashboard login page](/note/images/ceph-2.png)
 
 4. 创建Dashboard用户。
 ```sh
@@ -420,7 +420,7 @@ $ ceph dashboard ac-user-create admin admin administrator
 ```
 
 在Dashboard登录页尝试登录刚才创建的账号。
-![Ceph Dashboard home page](../../../../images/ceph-3.png)
+![Ceph Dashboard home page](/note/images/ceph-3.png)
 
 
 至此Ceph集群基础组件部署完毕，可以根据需要往下部署不同存储类型的服务。
